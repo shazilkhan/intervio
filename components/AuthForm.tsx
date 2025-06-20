@@ -15,11 +15,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Link } from "lucide-react";
 const formSchema = z.object({
   username: z.string().min(2).max(50),
 });
 
-const AuthForm = () => {
+const AuthForm = ({type} : {type: FormType}) => {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,6 +35,8 @@ const AuthForm = () => {
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
+
+  const isSignin = type === "sign-in";
   return (
     <div className="card-border lg:min-w-[566px]">
       <div className="flex flex-col gap-6 card py-14 px-10">
@@ -46,25 +49,13 @@ const AuthForm = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mt-4 form" >
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
+             {!isSignin  && <p>Name</p>}
+             <p>Email</p>
+             <p>Password</p>
+            <Button type="submit">{isSignin ? 'Sign-in' : 'Create an Accont'}</Button>
           </form>
         </Form>
+        <p className="text-center">{isSignin ? 'No Account yet' : 'Already have an Account'} <Link href={!isSignin ? '/sign-in' : '/sign-up'} className="font-bold text-user-primary ml-1"> {!isSignin ? 'Sign-in' : 'Sign-up'} </Link></p>
       </div>
     </div>
   );
